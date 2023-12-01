@@ -1,0 +1,262 @@
+---
+title: "Hello"
+author: "Ngan Ho"
+date: "2023-12-01"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(CELRPackage)
+library(dplyr)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+# Day 1
+
+## Part 1
+
+```{r pressure, echo=FALSE}
+data = ReadExcelFiles("DATA/InputString.xlsx")
+
+
+# check = data %>% 
+#   mutate(
+#     match = str_extract_all(TextString, "\\d"),
+#     First = 
+#       # case_when(
+#                 length(match) > 1 ~ match[[1]][1],
+#                       # T ~ match),
+#     Last = 
+#       # case_when(
+#       length(match) > 1 ~ match[[1]][length(match)],
+#                       # T ~ match)
+#   )
+
+
+check = data %>% 
+  mutate(
+    match = str_extract_all(TextString, "\\d"),
+    First = 
+      # case_when(
+                match[[1]][1],
+                      # T ~ match),
+    Last = 
+      # case_when(
+      match[[1]][length(match)],
+                      # T ~ match)
+  )
+
+list_number = list()
+total = 0
+
+for (i in 1:nrow(data)) {
+  
+  string = filter(data, Index == i)$TextString
+  
+  list = str_extract_all(string, "\\d")
+  
+  first = list[[1]][1]
+  
+  last = list[[1]][length(list[[1]])]
+  
+  number = as.integer(paste0(first, last))
+  
+  list_number = append(list_number, number)
+  
+  total = total + number
+  
+  
+}
+
+
+```
+
+## Part 2
+
+
+```{r pressure, echo=FALSE}
+check_2 = data %>% 
+  mutate(TextStringAdjust = case_when(str_detect(TextString, "oneight") ~ str_replace_all(TextString, "oneight", "oneeight"),
+                                      str_detect(TextString, "twone") ~ str_replace_all(TextString, "twone", "twoone"),
+                                      str_detect(TextString, "eightwo") ~ str_replace_all(TextString, "eightwo", "eighttwo"),
+                                      T ~ TextString),
+         after = str_replace_all(TextStringAdjust, "one", "1"),
+         after = str_replace_all(after, "two", "2"),
+         after = str_replace_all(after, "three", "3"),
+         after = str_replace_all(after, "four", "4"),
+         after = str_replace_all(after, "five", "5"),
+         after = str_replace_all(after, "six", "6"),
+         after = str_replace_all(after, "seven", "7"),
+         after = str_replace_all(after, "eight", "8"),
+         after = str_replace_all(after, "nine", "9"))
+
+list_number_2 = list()
+total_2 = 0
+
+for (i in 1:nrow(check_2)) {
+  
+  string = filter(check_2, Index == i)$after
+  
+  list = str_extract_all(string, "\\d")
+  
+  first = list[[1]][1]
+  
+  last = list[[1]][length(list[[1]])]
+  
+  number = as.integer(paste0(first, last))
+  
+  list_number_2 = append(list_number_2, number)
+  
+  total_2 = total_2 + number
+  
+  
+}
+
+
+
+```
+
+```{r pressure, echo=FALSE}
+rule = regex("one|two|three|four|five|six|seven|eight|nine")
+
+# string = filter(check_2, Index == 105)$TextString
+# string_after = ""
+
+total_2 = 0
+
+for (i in 1:nrow(check)) {
+  
+  string = filter(check, Index == i)$TextString
+  
+  string_after = ""
+  
+  while (str_detect(string, rule)) {
+  
+    location = str_locate(string, rule)
+  
+    len = nchar(string)
+  
+    string_before = paste0(string_after, str_sub(string, 1, location[1] - 1))
+    
+    string_convert = str_sub(string, location[1], location[2])
+    
+    if (string_convert == "one") {
+      
+      string_converted = str_replace(string_convert, "one", "1")
+      
+    } else if (string_convert == "two") {
+          
+      string_converted = str_replace(string_convert, "two", "2")
+  
+      
+    } else if (string_convert == "three") {
+          
+      string_converted = str_replace(string_convert, "three", "3")
+  
+      
+    } else if (string_convert == "four") {
+          
+      string_converted = str_replace(string_convert, "four", "4")
+  
+      
+    } else if (string_convert == "five") {
+          
+      string_converted = str_replace(string_convert, "five", "5")
+  
+      
+    } else if (string_convert == "six") {
+          
+      string_converted = str_replace(string_convert, "six", "6")
+  
+      
+    } else if (string_convert == "seven") {
+          
+      string_converted = str_replace(string_convert, "seven", "7")
+  
+      
+    } else if (string_convert == "eight") {
+          
+      string_converted = str_replace(string_convert, "eight", "8")
+  
+      
+    } else if (string_convert == "nine") {
+          
+      string_converted = str_replace(string_convert, "nine", "9")
+  
+      
+    }
+    
+    string_after = paste0(string_before, string_converted)
+  
+    string = str_sub(string, location[2] + 1, len)
+  
+  }
+  
+  string_final = paste0(string_after, string)
+  
+  list = str_extract_all(string_final, "\\d")
+  
+  first = list[[1]][1]
+  
+  last = list[[1]][length(list[[1]])]
+  
+  number = as.integer(paste0(first, last))
+  
+  # list_number_2 = append(list_number_2, number)
+  
+  total_2 = total_2 + number
+  
+  
+}
+
+
+
+  
+  
+  
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
