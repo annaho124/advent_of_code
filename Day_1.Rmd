@@ -11,15 +11,6 @@ library(dplyr)
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
-```
 
 # Day 1
 
@@ -46,14 +37,14 @@ data = ReadExcelFiles("DATA/InputString.xlsx")
 check = data %>% 
   mutate(
     match = str_extract_all(TextString, "\\d"),
-    First = 
-      # case_when(
-                match[[1]][1],
-                      # T ~ match),
-    Last = 
-      # case_when(
-      match[[1]][length(match)],
-                      # T ~ match)
+    # First = 
+    #   # case_when(
+    #             match[[1]][1],
+    #                   # T ~ match),
+    # Last = 
+    #   # case_when(
+    #   match[[1]][length(match)],
+    #                   # T ~ match)
   )
 
 list_number = list()
@@ -83,6 +74,9 @@ for (i in 1:nrow(data)) {
 
 ## Part 2
 
+- If overlap, e.g "eightwo" -> "eighttwo" -> 82
+
+- Right answer
 
 ```{r pressure, echo=FALSE}
 check_2 = data %>% 
@@ -125,6 +119,12 @@ for (i in 1:nrow(check_2)) {
 
 
 ```
+
+- Replace the overlapping one with the one on the left, for example:
+
+  - "eightwo" -> "8wo"
+  
+- Wrong answer, but the flow of code is good enough
 
 ```{r pressure, echo=FALSE}
 rule = regex("one|two|three|four|five|six|seven|eight|nine")
@@ -192,7 +192,6 @@ for (i in 1:nrow(check)) {
     } else if (string_convert == "nine") {
           
       string_converted = str_replace(string_convert, "nine", "9")
-  
       
     }
     
@@ -221,14 +220,133 @@ for (i in 1:nrow(check)) {
 
 
 
+test = "cbzeightwo7npgjjxfzrvz66"
+
+str_locate_all(test, rule)
   
-  
-  
+
+
+
+test_2 = "6seven5196fivesix"
+
+str_locate_all(test_2, regex("\\d"))
 
 
 ```
 
+# Lan solution
 
+- Correct ( ꩜ ᯅ ꩜;)⁭ ⁭
+- Instead of cutting the string from the end of the first match, just cut the 1st letter out
+- So "eightwo" -> 8 + "ightwo" -> 8 + "igh" + 2
+
+```{r echo=FALSE}
+rule = regex("one|two|three|four|five|six|seven|eight|nine")
+
+# string = filter(check_2, Index == 105)$TextString
+# string_after = ""
+
+total_3 = 0
+
+for (i in 1:nrow(check)) {
+  
+  string = filter(check, Index == i)$TextString
+  
+  string_after = ""
+  
+  while (str_detect(string, rule)) {
+  
+    location = str_locate(string, rule)
+  
+    len = nchar(string)
+  
+    string_before = paste0(string_after, str_sub(string, 1, location[1] - 1))
+    
+    string_convert = str_sub(string, location[1], location[2])
+    
+    if (string_convert == "one") {
+      
+      string_converted = str_replace(string_convert, "one", "1")
+      
+    } else if (string_convert == "two") {
+          
+      string_converted = str_replace(string_convert, "two", "2")
+  
+      
+    } else if (string_convert == "three") {
+          
+      string_converted = str_replace(string_convert, "three", "3")
+  
+      
+    } else if (string_convert == "four") {
+          
+      string_converted = str_replace(string_convert, "four", "4")
+  
+      
+    } else if (string_convert == "five") {
+          
+      string_converted = str_replace(string_convert, "five", "5")
+  
+      
+    } else if (string_convert == "six") {
+          
+      string_converted = str_replace(string_convert, "six", "6")
+  
+      
+    } else if (string_convert == "seven") {
+          
+      string_converted = str_replace(string_convert, "seven", "7")
+  
+      
+    } else if (string_convert == "eight") {
+          
+      string_converted = str_replace(string_convert, "eight", "8")
+  
+      
+    } else if (string_convert == "nine") {
+          
+      string_converted = str_replace(string_convert, "nine", "9")
+      
+    }
+    
+    string_after = paste0(string_before, string_converted)
+  
+    string = str_sub(string, location[1] + 1, len)
+  
+  }
+  
+  string_final = paste0(string_after, string)
+  
+  list = str_extract_all(string_final, "\\d")
+  
+  first = list[[1]][1]
+  
+  last = list[[1]][length(list[[1]])]
+  
+  number = as.integer(paste0(first, last))
+  
+  # list_number_2 = append(list_number_2, number)
+  
+  total_3 = total_3 + number
+  
+  
+}
+
+
+
+# test = "cbzeightwo7npgjjxfzrvz66"
+# 
+# str_locate_all(test, rule)
+#   
+# 
+# 
+# 
+# test_2 = "6seven5196fivesix"
+# 
+# str_locate_all(test_2, regex("\\d"))
+
+
+```
 
 
 
