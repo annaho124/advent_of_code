@@ -113,8 +113,8 @@ table_for_copy_test = tibble(
 ```
 
 ```{r echo=FALSE}
-string = "1 21 53 59 44 | 69 82 63 72 16 21 14  1"
-i = 3
+string = "31 18 13 56 72 | 74 77 10 23 35 67 36 11"
+i = 6
 
 winning_card = CleanListOfNumbersInCard(strsplit(string, split=' | ', fixed=TRUE)[[1]][1])
 owned_card = CleanListOfNumbersInCard(strsplit(string, split=' | ', fixed=TRUE)[[1]][2])
@@ -127,18 +127,27 @@ if (n_match > 0) {
                              T ~ match))
   
   start = i + 1
+  
+  if (i + n_match > 6) {
+    
+    end = 6
+    
+  } else {
+    
   end = i + n_match
+  
+  }
+  
+  copy_added = 1*filter(table_for_copy_test, card == i)$n_copy
   
   for (n in start:end) {
     
+    
     table_for_copy_test = table_for_copy_test %>% 
-      mutate(n_copy = case_when(card == n ~ n_copy + 1,
+      mutate(n_copy = case_when(card == n ~ n_copy + copy_added,
                                 T ~ n_copy))
     
   }
-  
-  table_for_copy_test = table_for_copy_test %>% 
-    mutate(point = match*n_copy)
   
     
 }
@@ -147,35 +156,83 @@ if (n_match > 0) {
 ```
 
 ```{r echo=FALSE}
+table_for_copy = tibble(
+  card = 1:nrow(cleaned_input),
+  match = rep(0, n = nrow(cleaned_input)),
+  n_copy = rep(1, n =nrow(cleaned_input))
+)
 
-
-# for (i in 1:nrow(cleaned_input)) {
-#   
-#   string = cleaned_input$Two[[i]]
-#   
-#   winning_card = CleanListOfNumbersInCard(strsplit(string, split=' | ', fixed=TRUE)[[1]][1])
-#   
-#   owned_card = CleanListOfNumbersInCard(strsplit(string, split=' | ', fixed=TRUE)[[1]][2])
-#  
-#   len = length(intersect(winning_card, owned_card))
-#   
-#   if (len > 0) {
-#   
-#     number = 2^(len-1)
-#   
-#     
-#   } else {
-#     
-#     number = 0
-#     
-#   }
-#   
-#   total = total + number
-#   
-# }
-# 
-# total
+for (row in 1:nrow(cleaned_input)) {
+  
+  string = cleaned_input$Two[[row]]
+  
+  winning_card = CleanListOfNumbersInCard(strsplit(string, split=' | ', fixed=TRUE)[[1]][1])
+  owned_card = CleanListOfNumbersInCard(strsplit(string, split=' | ', fixed=TRUE)[[1]][2])
+  n_match = length(intersect(winning_card, owned_card))
+  
+  if (n_match > 0) {
+  
+    table_for_copy = table_for_copy %>% 
+      mutate(match = case_when(card == row ~ n_match,
+                               T ~ match))
+    
+    start = row + 1
+  
+    if (row + n_match > nrow(cleaned_input)) {
+    
+      end = nrow(cleaned_input)
+    
+    } else {
+    
+      end = row + n_match
+  
+    }
+  
+    copy_added = 1*filter(table_for_copy, card == row)$n_copy
+  
+    for (n in start:end) {
+    
+    
+      table_for_copy = table_for_copy %>% 
+        mutate(n_copy = case_when(card == n ~ n_copy + copy_added,
+                                  T ~ n_copy))
+    
+    }
+  
+    
+  }
+  
+}
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
