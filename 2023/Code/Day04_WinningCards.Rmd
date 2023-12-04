@@ -1,0 +1,183 @@
+---
+title: "Day 03 Part Numbers"
+author: "Ngan Ho"
+date: "2023-12-03"
+output: html_document
+---
+
+```{r , message=FALSE,include=FALSE}
+library(stringr)
+library(CELRPackage)
+library(dplyr)
+```
+
+```{r echo=FALSE}
+input = ReadExcelFiles("../DATA/Day04_WinningCard.xlsx")
+
+cleaned_input = input %>% 
+  separate(col = "Card",
+           sep = ": ",
+           into = c("Card", "Two")) %>% 
+  mutate(Card = as.numeric(str_extract(Card, regex("[0-9]+"))))
+
+```
+
+# Part 1
+
+```{r echo=FALSE}
+
+
+string = cleaned_input$Two[[1]]
+# strsplit(string, split=' | ', fixed=TRUE)
+
+
+winning_card = strsplit(string, split= ' | ', fixed=TRUE)[[1]][1]
+  
+# strsplit(winning_card, " ")[[1]]
+
+CleanListOfNumbersInCard = function(string) {
+
+  string_return = c()
+
+  string = strsplit(string, " ")[[1]]
+  
+  for (number in string) {
+    
+    if (number != "") {
+      
+      string_return = append(string_return, number)
+      
+    }
+    
+  }
+
+  return(string_return)
+
+}
+
+
+CleanListOfNumbersInCard(winning_card)
+
+string = "41 48 83 86 17 | 83 86  6 31 17  9 48 53"
+```
+
+
+```{r echo=FALSE}
+total = 0
+for (i in 1:nrow(cleaned_input)) {
+  
+  string = cleaned_input$Two[[i]]
+  
+  winning_card = CleanListOfNumbersInCard(strsplit(string, split=' | ', fixed=TRUE)[[1]][1])
+  
+  owned_card = CleanListOfNumbersInCard(strsplit(string, split=' | ', fixed=TRUE)[[1]][2])
+ 
+  len = length(intersect(winning_card, owned_card))
+  
+  if (len > 0) {
+  
+    number = 2^(len-1)
+  
+    
+  } else {
+    
+    number = 0
+    
+  }
+  
+  total = total + number
+  
+}
+
+
+
+```
+
+# Part 2
+
+```{r echo=FALSE}
+# total_2 = 0
+# table_for_copy = tibble(
+#   card = 1:nrow(cleaned_input),
+#   match = rep(0, n = nrow(cleaned_input)),
+#   n_copy = rep(1, n = nrow(cleaned_input))
+# )
+
+table_for_copy_test = tibble(
+  card = 1:6,
+  match = rep(0, n = 6),
+  n_copy = rep(1, n =6)
+)
+
+
+```
+
+```{r echo=FALSE}
+string = "1 21 53 59 44 | 69 82 63 72 16 21 14  1"
+i = 3
+
+winning_card = CleanListOfNumbersInCard(strsplit(string, split=' | ', fixed=TRUE)[[1]][1])
+owned_card = CleanListOfNumbersInCard(strsplit(string, split=' | ', fixed=TRUE)[[1]][2])
+n_match = length(intersect(winning_card, owned_card))
+ 
+if (n_match > 0) {
+  
+  table_for_copy_test = table_for_copy_test %>% 
+    mutate(match = case_when(card == i ~ n_match,
+                             T ~ match))
+  
+  start = i + 1
+  end = i + n_match
+  
+  for (n in start:end) {
+    
+    table_for_copy_test = table_for_copy_test %>% 
+      mutate(n_copy = case_when(card == n ~ n_copy + 1,
+                                T ~ n_copy))
+    
+  }
+  
+  table_for_copy_test = table_for_copy_test %>% 
+    mutate(point = match*n_copy)
+  
+    
+}
+
+
+```
+
+```{r echo=FALSE}
+
+
+# for (i in 1:nrow(cleaned_input)) {
+#   
+#   string = cleaned_input$Two[[i]]
+#   
+#   winning_card = CleanListOfNumbersInCard(strsplit(string, split=' | ', fixed=TRUE)[[1]][1])
+#   
+#   owned_card = CleanListOfNumbersInCard(strsplit(string, split=' | ', fixed=TRUE)[[1]][2])
+#  
+#   len = length(intersect(winning_card, owned_card))
+#   
+#   if (len > 0) {
+#   
+#     number = 2^(len-1)
+#   
+#     
+#   } else {
+#     
+#     number = 0
+#     
+#   }
+#   
+#   total = total + number
+#   
+# }
+# 
+# total
+```
+
+
+
+
+
