@@ -1,0 +1,53 @@
+---
+title: "Racing Boats"
+author: "Ngan Ho"
+date: "2023-12-06"
+output: html_document
+---
+
+```{r , message=FALSE,include=FALSE}
+library(stringr)
+library(CELRPackage)
+library(dplyr)
+```
+
+```{r echo=FALSE}
+input = tibble(
+  time = c(53, 91, 67, 68),
+  distance = c(250, 1330, 1081, 1025)
+)
+
+
+input_part2 = tibble(
+  time = 53916768,
+  distance = 250133010811025
+)
+```
+
+```{r echo=FALSE}
+n_case_to_pass = c()
+
+  
+  total_time = input_part2$time
+  distance_to_pass = input_part2$distance
+  number = 0
+  
+  for (time in 1:total_time) {
+    
+    speed = time
+    time_to_travel = total_time - time
+    
+    distance_can_travel = speed*time_to_travel
+    
+    if (distance_can_travel > distance_to_pass) {
+      
+      number = number + 1
+      
+    }
+    
+  }
+  
+  
+
+```
+
