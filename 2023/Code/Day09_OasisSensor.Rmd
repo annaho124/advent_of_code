@@ -1,0 +1,24 @@
+---
+title: "Oasis Sensor"
+author: "Ngan Ho"
+date: "2023-12-10"
+output: html_document
+---
+
+```{r setup, message=FALSE,include=FALSE}
+library(stringr)
+library(CELRPackage)
+library(dplyr)
+```
+
+```{r echo=FALSE}
+input = ReadExcelFiles("../DATA/Day09_OasisSensor.xlsx")
+
+```
+
+```{r echo=FALSE}
+string_to_check = input$input[1]
+
+list_from_string = strsplit(string_to_check, split = " ")[[1]]
+
+```
