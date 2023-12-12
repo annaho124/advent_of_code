@@ -19,6 +19,62 @@ input = ReadExcelFiles("../DATA/Day09_OasisSensor.xlsx")
 ```{r echo=FALSE}
 string_to_check = input$input[1]
 
-list_from_string = strsplit(string_to_check, split = " ")[[1]]
+
+
+FindStringValue = function(string_input) {
+  
+  list_from_string = strsplit(string_input, split = " ")[[1]]
+  list_from_string = as.vector(as.numeric(list_from_string))
+  
+  list_create = list(list_from_string)
+  list_different = c()
+  
+  while(sum(list_different) != 0 | sum(list_different) == 0 & length(list_different) == 0) {
+  
+  list_different = c()
+  for (i in 1:(length(list_from_string) - 1)) {
+  
+    different = list_from_string[i+1] - list_from_string[i]
+    
+    list_different = append(list_different, different)
+  
+  }
+
+  list_create = append(list_create, list(list_different))
+  list_from_string = list_different
+  
+  
+  }
+  
+  list_create[[length(list_create)]] = append(list_create[[length(list_create)]], 0)
+  
+  for (i in (length(list_create) - 1):1) {
+    
+    number_to_append = list_create[[i+1]][length(list_create[[i+1]])] + list_create[[i]][length(list_create[[i]])]
+    
+    list_create[[i]] = append(list_create[[i]], number_to_append)
+    
+  }
+  
+  
+  return(list_create[[1]][length(list_create[[1]])])
+  
+}
+
+
+
+```
+
+```{r echo=FALSE}
+total_number = 0
+for (row in 1:nrow(input_df)) {
+  
+  number = FindStringValue(string_input = input_df$input[row])
+  
+  
+  total_number = total_number + number
+  
+}
+
 
 ```
