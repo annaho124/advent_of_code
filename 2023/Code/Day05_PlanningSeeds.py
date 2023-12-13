@@ -11,6 +11,9 @@ demo_humidity_to_location = pd.read_excel('../DATA/Day05_PlanningSeed.xlsx', she
 
 string_seed = demo_seed.seeds[0]
 string_seed = string_seed.split(" ")
+seed_to_create = {
+    'seed': []
+}
 for i in range(len(string_seed)):
 
     if i % 2 == 0:
@@ -18,11 +21,10 @@ for i in range(len(string_seed)):
         value = string_seed[i:i+2]
         start = int(value[0])
         length = int(value[1])
-        list_seed_to_plan['range_seed'].append([start, start + length])
-        list_seed_to_plan['index'].append(int(i/2))
+        seed_to_create['seed'].append(list(range(start, start + length)))
 
 
-
+seed_df = pd.DataFrame(seed_to_create)
 seed_df['seed'] = seed_df['seed'].astype(int)
 
 def ConvertStringToMatchingTable(input_df,
